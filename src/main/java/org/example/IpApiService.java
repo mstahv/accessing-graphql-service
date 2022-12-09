@@ -24,8 +24,8 @@ public class IpApiService {
 
     public LocationDTO findIpDetails(String ipOrDomainName) {
         String document = """
-            {
-                  ipApi_location(ip: "ARG") {
+            query ipQuery($ip: String!) {
+              ipApi_location(ip: $ip) {
                 ip
                 city
                 country
@@ -35,9 +35,10 @@ public class IpApiService {
                 lon
               }
             }
-        """.replace("ARG", ipOrDomainName);
+        """;
 
         return client.document(document)
+                .variable("ip", ipOrDomainName)
                 .retrieve("ipApi_location")
                 .toEntity(LocationDTO.class)
                 .block();
