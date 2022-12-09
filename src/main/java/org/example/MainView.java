@@ -2,12 +2,7 @@ package org.example;
 
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.map.Map;
-import com.vaadin.flow.component.map.configuration.Coordinate;
-import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,6 +15,10 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
+import software.xdev.vaadin.maps.leaflet.flow.LMap;
+import software.xdev.vaadin.maps.leaflet.flow.data.LCenter;
+import software.xdev.vaadin.maps.leaflet.flow.data.LMarker;
+import software.xdev.vaadin.maps.leaflet.flow.data.LTileLayer;
 
 @Route
 public class MainView extends VerticalLayout {
@@ -44,20 +43,21 @@ public class MainView extends VerticalLayout {
             ipOrDomain.setValue(remoteAddr);
         }
 
-        Map map = new Map();
+        LMap map = new LMap();
+        map.setSizeFull();
+        map.setTileLayer(LTileLayer.DEFAULT_OPENSTREETMAP_TILE);
+        map.setCenter(new LCenter(0,0,1));
 
         Button button = new Button("Detect!", event -> {
             LocationDTO result = service.findIpDetails(ipOrDomain.getValue());
 
-            Coordinate c = new Coordinate(result.getLon(), result.getLat());
-            MarkerFeature marker = new MarkerFeature(c);
-            map.getFeatureLayer().addFeature(marker);
-            map.setCenter(c);
-            map.setZoom(10);
+            map.addLComponents(new LMarker(result.getLat(), result.getLon()));
+            map.setCenter(new LCenter(result.getLat(), result.getLon(), 10));
+            
             Notification.show(String.format("You appear to be in %s, and your internet "
-                            + "provider is  %s. Estimated location plotted on the map. "
-                            + "Scary, huh?", result.getCity(), result.getIsp())
-            , 3000, Notification.Position.MIDDLE);
+                    + "provider is  %s. Estimated location plotted on the map. "
+                    + "Scary, huh?", result.getCity(), result.getIsp()),
+                     3000, Notification.Position.MIDDLE);
 
         });
         button.addClickShortcut(Key.ENTER);
@@ -65,7 +65,7 @@ public class MainView extends VerticalLayout {
         HorizontalLayout inputRow = new HorizontalLayout(ipOrDomain, button);
         inputRow.setAlignItems(Alignment.END);
         add(inputRow);
-        
+
         setSizeFull();
         addAndExpand(map);
     }
