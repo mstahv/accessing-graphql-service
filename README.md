@@ -1,7 +1,7 @@
 # Consuming GraphQL example with Java, Spring Boot & Vaadin
 
-This example app shows how to consume trivial data from a GraphQL API exposed
-by StepZen.
+This example app shows how to consume trivial data from a GraphQL API.
+The GraphQL API is provided by [StepZen](https://stepzen.com), and is based on the `https://ip-api.com` IP Geolocation service.
 
 The example app looks like this:
 ![Screenshot](https://github.com/mstahv/accessing-graphql-service/raw/main/assets/screenshot.png "Screenshot")

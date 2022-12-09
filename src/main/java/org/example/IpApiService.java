@@ -10,16 +10,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class IpApiService {
 
-    @Value("${stepzensource}")
-    private String stepzenSourceUrl;
+    @Value("${graphqlApiUrl}")
+    private String graphqlApiUrl;
 
     GraphQlClient client;
 
     @PostConstruct
     void init() {
-        WebClient wc = WebClient.create(stepzenSourceUrl);
-        HttpGraphQlClient graphQlClient = HttpGraphQlClient.create(wc);
-        client = graphQlClient;
+        WebClient wc = WebClient.create(graphqlApiUrl);
+        client = HttpGraphQlClient.create(wc);
     }
 
     public LocationDTO findIpDetails(String ipOrDomainName) {
