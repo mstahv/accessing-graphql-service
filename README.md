@@ -1,14 +1,16 @@
 # Consuming GraphQL example with Java, Spring Boot & Vaadin
 
 This example app shows how to consume trivial data from a GraphQL API.
-The GraphQL API is provided by [StepZen](https://stepzen.com), and is based on the `https://ip-api.com` IP Geolocation service.
+The GraphQL API is provided by [StepZen](https://stepzen.com), and is based on 
+the `https://ip-api.com` IP Geolocation service.
 
 The example app looks like this:
 ![Screenshot](https://github.com/mstahv/accessing-graphql-service/raw/main/assets/screenshot.png "Screenshot")
 
 ## Running the application
 The project is a standard Maven project. To run it from the command line,
-type `mvn`, then open http://localhost:8080 in your browser.
+type `mvn`, then open http://localhost:8080 in your browser. The first launch may 
+take several minutes as front-end build files are not committed to the repository.
 
 You can also import the project to your IDE of choice as you would with any
 Maven project. Read more on [how to set up a development environment for
