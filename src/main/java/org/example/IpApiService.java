@@ -10,22 +10,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class IpApiService {
 
-    @Value("${stepzensource}")
-    private String stepzenSourceUrl;
+    @Value("${graphqlApiUrl}")
+    private String graphqlApiUrl;
 
     GraphQlClient client;
 
     @PostConstruct
     void init() {
-        WebClient wc = WebClient.create(stepzenSourceUrl);
-        HttpGraphQlClient graphQlClient = HttpGraphQlClient.create(wc);
-        client = graphQlClient;
+        WebClient wc = WebClient.create(graphqlApiUrl);
+        client = HttpGraphQlClient.create(wc);
     }
 
     public LocationDTO findIpDetails(String ipOrDomainName) {
         String document = """
-            {
-                  ipApi_location(ip: "ARG") {
+            query ipQuery($ip: String!) {
+              ipApi_location(ip: $ip) {
                 ip
                 city
                 country
@@ -35,9 +34,10 @@ public class IpApiService {
                 lon
               }
             }
-        """.replace("ARG", ipOrDomainName);
+        """;
 
         return client.document(document)
+                .variable("ip", ipOrDomainName)
                 .retrieve("ipApi_location")
                 .toEntity(LocationDTO.class)
                 .block();
