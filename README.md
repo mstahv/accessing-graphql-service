@@ -3,6 +3,9 @@
 This example app shows how to consume trivial data from a GraphQL API exposed
 by StepZen.
 
+The example app looks like this:
+![Screenshot](https://github.com/mstahv/accessing-graphql-service/raw/main/assets/screenshot.png "Screenshot")
+
 ## Running the application
 The project is a standard Maven project. To run it from the command line,
 type `mvn`, then open http://localhost:8080 in your browser.
