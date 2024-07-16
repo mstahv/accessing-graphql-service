@@ -9,16 +9,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
+import org.apache.commons.io.IOUtils;
+import org.vaadin.addons.maplibre.MapLibre;
+import org.vaadin.addons.maplibre.Marker;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.io.IOUtils;
-import software.xdev.vaadin.maps.leaflet.flow.LMap;
-import software.xdev.vaadin.maps.leaflet.flow.data.LCenter;
-import software.xdev.vaadin.maps.leaflet.flow.data.LMarker;
-import software.xdev.vaadin.maps.leaflet.flow.data.LTileLayer;
 
 @Route
 public class MainView extends VerticalLayout {
@@ -43,17 +42,16 @@ public class MainView extends VerticalLayout {
             ipOrDomain.setValue(remoteAddr);
         }
 
-        LMap map = new LMap();
+        // Note this, API key works only for local testing, create your own in maptiler.com
+        MapLibre map = new MapLibre("https://api.maptiler.com/maps/streets/style.json?key=qOkO4acoDsrtuvKp9BxP");
         map.setSizeFull();
-        map.setTileLayer(LTileLayer.DEFAULT_OPENSTREETMAP_TILE);
-        map.setCenter(new LCenter(0,0,1));
 
         Button button = new Button("Detect!", event -> {
             LocationDTO result = service.findIpDetails(ipOrDomain.getValue());
 
-            map.addLComponents(new LMarker(result.getLat(), result.getLon()));
-            map.setCenter(new LCenter(result.getLat(), result.getLon(), 10));
-            
+            Marker marker = map.addMarker(result.getLon(), result.getLat());
+            map.flyTo(marker.getGeometry(), 10);
+
             Notification.show(String.format("You appear to be in %s, and your internet "
                     + "provider is  %s. Estimated location plotted on the map. "
                     + "Scary, huh?", result.getCity(), result.getIsp()),
